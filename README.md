@@ -1,9 +1,9 @@
-## Simple Django Rest Boilerplate
+## Online MCQ Exam
 
 ### Demo .env
 
 ```
-SECRET_KEY="lftg45yerdgdf834y29(86as9$a2tmqkend"
+SECRET_KEY="lsdfwe3ftg45yerdgdf834y29(86as9$a2tmqkend"
 DEBUG=True
 DATABASES_NAME="your database name"
 DATABASES_USER="database uer"
@@ -12,10 +12,6 @@ DATABASES_HOST='localhost'
 DATABASES_PORT='3306'
 API_URL=""
 STATIC_ROOT=""
-MASTER_MODULE_API_URL=""
-USER_MODULE_API_URL=""
-PRODUCT_MODULE_API_URL=""
-MEDIA_BASE_DIR=""
 JWT_SECRET_KEY="dev_wlrjfsea1"
 JWT_VALID="3600"
 TIME_ZONE="Asia/Dhaka"
@@ -35,8 +31,8 @@ ALLOWED_HOSTS="localhost"
 9. Run the project via `python manage.py runserver`
 10. Now test the api via postman or direct hit the url from browser.
 11. URL list:
-    Get all: http://localhost:8000/api/device-info/tokens/
-    Get specific one: http://localhost:8000/api/device-info/tokens/<specific_id_here>
-    Post: http://localhost:8000/api/device-info/tokens/
+    Get all: http://localhost:8000/api/user
+    Get specific one: http://localhost:8000/api/users/<user_id>
+    Post: http://localhost:8000/api/user/
 
 ```
