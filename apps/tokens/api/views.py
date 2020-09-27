@@ -547,8 +547,8 @@ class UserExamView(viewsets.ModelViewSet):
       
       
 class UserExamDetailView(viewsets.ModelViewSet):
-  queryset = UserExamDetailView.objects.all()
-  serializer_class = UserExamDetailViewSerializer
+  queryset = UserExamDetail.objects.all()
+  serializer_class = UserExamDetailSerializer
   # lookup_field='id'
 
   # for custom handling of http method 'post' override the

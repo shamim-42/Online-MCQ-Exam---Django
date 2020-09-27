@@ -1,9 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from apps.tokens.api import views
-
 mcq_router = routers.DefaultRouter()
-
 
 mcq_router.register(r'user', views.UserView)
 mcq_router.register(r'exam', views.ExamView)

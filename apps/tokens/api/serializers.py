@@ -23,13 +23,13 @@ class QuestionSerializer(ModelSerializer):
         model = Question        
         fields = '__all__'
 
-class UserExam(ModelSerializer):    
+class UserExamSerializer(ModelSerializer):    
     # seller_user_id = serializers.CharField(required=False)
     class Meta:
         model = UserExam        
         fields = '__all__'
 
-class UserExamDetail(ModelSerializer):    
+class UserExamDetailSerializer(ModelSerializer):    
     # seller_user_id = serializers.CharField(required=False)
     class Meta:
         model = UserExamDetail        

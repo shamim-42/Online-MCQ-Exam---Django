@@ -18,37 +18,37 @@ class Token(models.Model):
 
 
 class User(models.Model):  
-  name = models.CharField(max_length=50)
+  name = models.CharField(max_length=50, null=True)
   mobile = models.CharField(max_length=16)
   password = models.CharField(max_length=32)
   
 
 class Exam(models.Model):  
-  title = models.CharField(max_length=256)
-  total_marks = models.IntegerField()
-  duration = models.IntegerField()
+  title = models.CharField(max_length=256, null=True)
+  total_marks = models.IntegerField(null=True)
+  duration = models.IntegerField(null=True)
   
 class Question(models.Model):
-  title = models.CharField(max_length=256)
-  options = JSONField()
+  title = models.CharField(max_length=256, null=True)
+  options = JSONField(null=True)
+  marks = models.IntegerField(null=True)  
+  fk_exam = models.ForeignKey("tokens.Exam", on_delete=models.CASCADE, null=True)
   
-  
-class UserExam(models.Model):  
-  total_qustion = models.IntegerField()
-  achieved_marks = models.IntegerField()
-  fk_user_id = models.ForeignKey("tokens.User", on_delete=models.CASCADE)
-  fk_exam_id = models.ForeignKey("tokens.Exam", on_delete=models.CASCADE)
-    STATUS = [
+class UserExam(models.Model):
+  total_question = models.IntegerField(null=True)
+  achieved_marks = models.IntegerField(null=True)
+  fk_user = models.ForeignKey("tokens.User", on_delete=models.CASCADE, null=True)
+  fk_exam = models.ForeignKey("tokens.Exam", on_delete=models.CASCADE, null=True)
+  STATUS = [
     ('completed', 'Completed'),
-    ('done', 'Done),
-    ('windows', 'Windows App'),
-    ('web', 'Web App')
+    ('done', 'Done')
   ]
-  status = models.CharField(choices=STATUS, max_length=50)
+  status = models.CharField(choices=STATUS, max_length=50, null=True)
+
   
 
 class UserExamDetail(models.Model):
-  fk_userexam_id = models.ForeignKey("tokens.UserExam", on_delete=models.CASCADE)
-  fk_question_id = models.ForeignKey("tokens.Question", on_delete=models.CASCADE)
-  correct = models.BooleanField()
+  fk_userexam = models.ForeignKey("tokens.UserExam", on_delete=models.CASCADE, null=True)
+  fk_question = models.ForeignKey("tokens.Question", on_delete=models.CASCADE, null=True)
+  correct = models.BooleanField(null=True)
   answered = models.CharField(max_length=2)
