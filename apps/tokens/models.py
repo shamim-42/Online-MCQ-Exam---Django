@@ -31,6 +31,7 @@ class Exam(models.Model):
 class Question(models.Model):
   title = models.CharField(max_length=256, null=True)
   options = JSONField(null=True)
+  selected_option = models.CharField(max_length=128, null=True)
   marks = models.IntegerField(null=True)  
   fk_exam = models.ForeignKey("tokens.Exam", on_delete=models.CASCADE, null=True)
   

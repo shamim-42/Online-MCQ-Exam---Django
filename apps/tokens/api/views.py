@@ -666,21 +666,57 @@ class LoginView(CreateAPIView):
         data = User.objects.get(mobile=mobile_number)
 
         if(data.password == password):
-          return Response(
-              data={
-                  'message': 'Valid User',
-                  'status': True
-              },
-              status=status.HTTP_200_OK
-          )
+            return Response(
+                data={
+                    'message': 'Valid User',
+                    'status': True,
+                    'data': {
+                        "userId": data.id,
+                        "name": data.name,
+                        "mobile": data.mobile,
+                    }
+                },
+                status=status.HTTP_200_OK
+            )
         else:
-          return Response(
-              data={
-                  'message': 'Login failed',
-                  'status': False,
-              },
-              status=status.HTTP_401_UNAUTHORIZED
-          )
+            return Response(
+                data={
+                    'message': 'Login failed',
+                    'status': False,
+                },
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+
+class SignupView(CreateAPIView):
+    def create(self, request, *args, **kwargs):
+        name = request.data['name']
+        mobile_number = request.data['mobile']
+        password = request.data['password']
+        data = User.objects.create(
+            name=name, mobile=mobile_number, password=password)
+
+        if(data.password == password):
+            return Response(
+                data={
+                    'message': 'User created successfully !',
+                    'status': True,
+                    'data': {
+                        "userId": data.id,
+                        "name": data.name,
+                        "mobile": data.mobile,
+                    }
+                },
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                data={
+                    'message': 'Singup failed',
+                    'status': False,
+                },
+                status=status.HTTP_401_UNAUTHORIZED
+            )
 
 
 # class FetchQuestionView(RetrieveAPIView):
@@ -705,5 +741,3 @@ class LoginView(CreateAPIView):
 #               },
 #               status=status.HTTP_401_UNAUTHORIZED
 #           )
-
-

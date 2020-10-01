@@ -12,5 +12,6 @@ mcq_router.register(r'user-exam-detail', views.UserExamDetailView)
 
 urlpatterns = [
     path('mcq/', include(mcq_router.urls)),
-    path('login/', views.LoginView.as_view())
+    path('login/', views.LoginView.as_view()),
+    path('signup/', views.SignupView.as_view()),
 ]
