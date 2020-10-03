@@ -719,25 +719,31 @@ class SignupView(CreateAPIView):
             )
 
 
-# class FetchQuestionView(RetrieveAPIView):
-#     def get(self, request, *args, **kwargs):
-#         userId = kwargs['userId']
-#         examId = kwargs['examId']
-#         data = Question.objects.filter(fk=mobile_number)
+class AnswerEvaluation(CreateAPIView):
+    def create(self, request,  *args, **kwargs):
+        userAnswers = request.data['selectedAnswer']
 
-#         if(data.password == password):
-#           return Response(
-#               data={
-#                   'message': 'Valid User',
-#                   'status': True
-#               },
-#               status=status.HTTP_200_OK
-#           )
-#         else:
-#           return Response(
-#               data={
-#                   'message': 'Login failed',
-#                   'status': False,
-#               },
-#               status=status.HTTP_401_UNAUTHORIZED
-#           )
+        queryset = Question.objects.filter(fk_exam=1)
+        achieved_marks = 0
+        all_ques = queryset.values()
+
+        for i in userAnswers:
+            q_id = i['question_id']
+            user_selected = i['selected_answer']
+
+            the_question = all_ques.filter(id=q_id)
+            correct_option = the_question[0]['correct_option']
+
+            if user_selected == correct_option:
+                achieved_marks += the_question[0]['marks']
+
+        return(
+            Response(
+                data={
+                    "message": "exam_result",
+                    "status": True,
+                    "data": {
+                        "achieved_marks": achieved_marks
+                    }
+                })
+        )
