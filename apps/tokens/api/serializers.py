@@ -5,33 +5,39 @@ from rest_framework.serializers import (
 from apps.tokens.models import *
 
 
-class UserSerializer(ModelSerializer):    
+class UserSerializer(ModelSerializer):
     # seller_user_id = serializers.CharField(required=False)
     class Meta:
-        model = User        
+        model = User
         fields = '__all__'
 
-class ExamSerializer(ModelSerializer):    
+
+class ExamSerializer(ModelSerializer):
     # seller_user_id = serializers.CharField(required=False)
     class Meta:
-        model = Exam        
+        model = Exam
         fields = '__all__'
 
-class QuestionSerializer(ModelSerializer):    
+
+class QuestionSerializer(ModelSerializer):
     # seller_user_id = serializers.CharField(required=False)
     class Meta:
-        model = Question        
+        model = Question
         fields = '__all__'
 
-class UserExamSerializer(ModelSerializer):    
+
+class UserExamSerializer(ModelSerializer):
+    # seller_user_id = serializers.CharField(required=False)
+    # exam_name = ExtraFieldSerializer()
+    class Meta:
+        model = UserExam
+        read_only_fields = ['exam_name']
+        fields = ['id', 'total_question', 'achieved_marks', 'status', 'taken_time', 'fk_user', 'fk_exam']
+        # extra_fields = ['exam_name']
+
+
+class UserExamDetailSerializer(ModelSerializer):
     # seller_user_id = serializers.CharField(required=False)
     class Meta:
-        model = UserExam        
+        model = UserExamDetail
         fields = '__all__'
-
-class UserExamDetailSerializer(ModelSerializer):    
-    # seller_user_id = serializers.CharField(required=False)
-    class Meta:
-        model = UserExamDetail        
-        fields = '__all__'
-

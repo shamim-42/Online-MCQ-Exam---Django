@@ -25,6 +25,7 @@ class User(models.Model):
     name = models.CharField(max_length=50, null=True)
     mobile = models.CharField(max_length=16)
     password = models.CharField(max_length=32)
+    is_superuser = models.BooleanField(verbose_name="Is Superuser", default=False)
 
 
 class Exam(models.Model):
@@ -50,10 +51,10 @@ class UserExam(models.Model):
     fk_exam = models.ForeignKey(
         "tokens.Exam", on_delete=models.CASCADE, null=True)
     STATUS = [
-        ('completed', 'Completed'),
         ('done', 'Done')
     ]
     status = models.CharField(choices=STATUS, max_length=50, null=True)
+    taken_time = models.IntegerField(null=True)
 
 
 class UserExamDetail(models.Model):

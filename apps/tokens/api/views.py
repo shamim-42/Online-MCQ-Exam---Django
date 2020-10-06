@@ -504,14 +504,20 @@ class UserExamView(viewsets.ModelViewSet):
 
             queryset = queryset[start:end]
 
-            serializer = self.get_serializer(queryset, many=True)
+            myqueryset = queryset.values()
+            all_exams = Exam.objects.all()
+            for i in myqueryset:
+                i['exam_name'] = all_exams.get(id=i['fk_exam_id']).title
+
+            serializer = self.get_serializer(myqueryset, many=True)
+
             return Response(
                 data={
                     'status': True,
                     'page_number': page_number,
                     'total': len(serializer.data),
-                    'message': "All exams",
-                    'data': serializer.data
+                    'message': "all_exam",
+                    'data': myqueryset
                 },
                 status=status.HTTP_200_OK
             )
@@ -520,7 +526,8 @@ class UserExamView(viewsets.ModelViewSet):
             return Response(
                 data={
                     'status': False,
-                    'message': "Something wrong"
+                    'message': "Something wrong",
+                    'error': ex
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
@@ -721,29 +728,122 @@ class SignupView(CreateAPIView):
 
 class AnswerEvaluation(CreateAPIView):
     def create(self, request,  *args, **kwargs):
-        userAnswers = request.data['selectedAnswer']
+        try:
+            userAnswers = request.data['selectedAnswer']
+            exam_id = request.data['examId']
+            user_id = request.data['userId']
+            taken_time = request.data['taken_time']  # in minutes
 
-        queryset = Question.objects.filter(fk_exam=1)
-        achieved_marks = 0
-        all_ques = queryset.values()
+            user = User.objects.get(id=user_id)  # creating instance
+            exam = Exam.objects.get(id=exam_id)  # creating instance
 
-        for i in userAnswers:
-            q_id = i['question_id']
-            user_selected = i['selected_answer']
+            # if already answered then don't go ahead to save again same question
+            queryset = UserExam.objects.filter(fk_user=user, fk_exam=exam)
 
-            the_question = all_ques.filter(id=q_id)
-            correct_option = the_question[0]['correct_option']
+            if (len(queryset.values()) == 0):
+                queryset = Question.objects.filter(fk_exam=exam_id)
+                achieved_marks = 0
+                all_ques = queryset.values()
+                total_question = len(all_ques)
 
-            if user_selected == correct_option:
-                achieved_marks += the_question[0]['marks']
+                for i in userAnswers:
+                    q_id = i['question_id']
+                    user_selected = i['selected_answer']
 
-        return(
-            Response(
-                data={
-                    "message": "exam_result",
-                    "status": True,
-                    "data": {
-                        "achieved_marks": achieved_marks
-                    }
-                })
-        )
+                    the_question = all_ques.filter(id=q_id)
+                    correct_option = the_question[0]['correct_option']
+
+                    if user_selected == correct_option:
+                        achieved_marks += the_question[0]['marks']
+
+                obj = UserExam(total_question=total_question, achieved_marks=achieved_marks,
+                               status="done", fk_user=user, fk_exam=exam, taken_time=taken_time)
+                obj.save()
+
+                return(
+                    Response(
+                        data={
+                            "message": "exam_result",
+                            "status": True,
+                            "data": {
+                                "achieved_marks": achieved_marks
+                            }
+                        })
+                )
+
+            else:
+                return(
+                    Response(
+                        data={
+                            "status": False,
+                            "message": "already_given",
+                            "data": ""
+                        })
+                )
+
+        except:
+
+            return(
+                Response(
+                    data={
+                        "status": False,
+                        "message": "error",
+                        "data": ""
+                    })
+            )
+
+
+class MakeSuperuser(CreateAPIView):
+    def create(self, request, *args, **kwargs):
+        proposed_user = request.data['proposedUserId']
+
+        try:
+            obj = User.objects.get(id=proposed_user)
+            obj.is_superuser = True
+            obj.save()
+
+            return(
+                Response(
+                    data={
+                        "status": True,
+                        "message": "user_is_now_superuser",
+                        # "data": obj
+                    })
+            )
+        except:
+            return(
+                Response(
+                    data={
+                        "status": False,
+                        "message": "error",
+                        "data": ""
+                    })
+            )
+
+
+class RemoveSuperuser(CreateAPIView):
+    def create(self, request, *args, **kwargs):
+        proposed_user = request.data['proposedUserId']
+
+        try:
+            obj = User.objects.get(id=proposed_user)
+            obj.is_superuser = False
+            obj.save()
+
+            return(
+                Response(
+                    data={
+                        "status": True,
+                        "message": "user_is_no_longer_superuser",
+                        # "data": obj
+                    })
+            )
+        except:
+            return(
+                Response(
+                    data={
+                        "status": False,
+                        "message": "error",
+                        "data": ""
+                    })
+            )

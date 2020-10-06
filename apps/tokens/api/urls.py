@@ -15,4 +15,6 @@ urlpatterns = [
     path('login/', views.LoginView.as_view()),
     path('signup/', views.SignupView.as_view()),
     path('answer-evaluation/', views.AnswerEvaluation.as_view()),
+    path('make-superuser/', views.MakeSuperuser.as_view()),
+    path('remove-superuser/', views.RemoveSuperuser.as_view()),
 ]
