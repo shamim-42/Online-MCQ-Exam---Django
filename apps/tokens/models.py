@@ -25,7 +25,15 @@ class User(models.Model):
     name = models.CharField(max_length=50, null=True)
     mobile = models.CharField(max_length=16)
     password = models.CharField(max_length=32)
-    is_superuser = models.BooleanField(verbose_name="Is Superuser", default=False)
+    is_superuser = models.BooleanField(
+        verbose_name="Is Superuser", default=True)
+
+
+# class JWTSession(models.Model):
+#     jwt = models.TextField(null=False, blank=False)
+#     fk_user = models.ForeignKey(
+#         'User', on_delete=models.CASCADE, null=False, blank=False)
+#     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
 
 
 class Exam(models.Model):

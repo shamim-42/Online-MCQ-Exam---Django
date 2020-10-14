@@ -25,11 +25,16 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
+# jwt secret key
+JWT_SECRET_KEY = config('JWT_SECRET_KEY')
+JWT_SECRET_KEY_VALID_IN_HOUR = config("JWT_SECRET_KEY_VALID_IN_HOUR")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=lambda v: [s.strip() for s in v.split(',')], default='*')
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=lambda v: [
+                       s.strip() for s in v.split(',')], default='*')
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
@@ -42,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    #custom apps
+    # custom apps
     'apps.tokens'
 ]
 
@@ -51,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
- 
+
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -79,7 +84,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'deviceTokens.wsgi.application'
 
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -89,7 +93,7 @@ DATABASES = {
         'NAME': config('DATABASES_NAME'),
         'USER': config('DATABASES_USER'),
         'PASSWORD': config('DATABASES_PASSWORD'),
-        'HOST': config('DATABASES_HOST'),        
+        'HOST': config('DATABASES_HOST'),
         'PORT': config('DATABASES_PORT', cast=int),
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
@@ -146,6 +150,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 def show_toolbar(request):
     return True
