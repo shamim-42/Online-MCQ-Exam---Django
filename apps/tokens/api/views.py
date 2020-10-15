@@ -665,44 +665,56 @@ class SignupView(CreateAPIView):
         name = request.data['name']
         mobile_number = request.data['mobile']
         password = request.data['password']
-        data = User.objects.create(
-            name=name, mobile=mobile_number, password=password)
 
-        if(data.password == password):
-            payload = {
-                "mobile": mobile_number,
-                "name": data.name,
-                "userId": data.id,
-                "isSuperuser": data.is_superuser,
-            }
-            jwt_token = jwt.encode(
-                {
-                    "data": payload,
-                    "exp": datetime.utcnow() + timedelta(seconds=60*60*int(settings.JWT_SECRET_KEY_VALID_IN_HOUR))
-                },
-                settings.JWT_SECRET_KEY, algorithm='HS256').decode('utf-8')
-
+        existance = User.objects.filter(mobile=mobile_number)
+        if(len(existance) > 0):
             return Response(
                 data={
-                    'message': 'User created successfully !',
-                    'status': True,
-                    'data': {
-                        "userId": data.id,
-                        "name": data.name,
-                        "mobile": data.mobile,
-                        "jwt": jwt_token
-                    }
-                },
-                status=status.HTTP_201_CREATED
-            )
-        else:
-            return Response(
-                data={
-                    'message': 'Singup failed',
+                    'message': 'Already exists',
                     'status': False,
                 },
-                status=status.HTTP_401_UNAUTHORIZED
+                status=status.HTTP_409_CONFLICT
             )
+        else:
+
+            data = User.objects.create(
+                name=name, mobile=mobile_number, password=password)
+
+            if(data.password == password):
+                payload = {
+                    "mobile": mobile_number,
+                    "name": data.name,
+                    "userId": data.id,
+                    "isSuperuser": data.is_superuser,
+                }
+                jwt_token = jwt.encode(
+                    {
+                        "data": payload,
+                        "exp": datetime.utcnow() + timedelta(seconds=60*60*int(settings.JWT_SECRET_KEY_VALID_IN_HOUR))
+                    },
+                    settings.JWT_SECRET_KEY, algorithm='HS256').decode('utf-8')
+
+                return Response(
+                    data={
+                        'message': 'User created successfully !',
+                        'status': True,
+                        'data': {
+                            "userId": data.id,
+                            "name": data.name,
+                            "mobile": data.mobile,
+                            "jwt": jwt_token
+                        }
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+            else:
+                return Response(
+                    data={
+                        'message': 'Singup failed',
+                        'status': False,
+                    },
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
 
 
 class AnswerEvaluation(CreateAPIView):
